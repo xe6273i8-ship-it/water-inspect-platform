@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import App from '../App.vue'
 import Login from '../views/Login.vue'
+import ThreeDPage from "@/views/ThreeDPage.vue";
 
 const routes = [
   {
@@ -13,6 +14,11 @@ const routes = [
     name: 'Home',
     component: App,
     meta: { requiresAuth: true } // 需要登录才能访问
+  },
+  {
+    path: "/3d", 
+    name: "ThreeD",
+    component: ThreeDPage
   }
 ]
 

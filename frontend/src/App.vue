@@ -51,6 +51,12 @@
             <span style="margin-left: 10px">水校准数据分析</span>
           </template>
         </el-menu-item>
+        <el-menu-item index="7">
+          <template #title>
+            <el-icon style="color: #38bdf8"><Grid /></el-icon>
+            <span style="margin-left: 10px">3D 可视化分析</span>
+          </template>
+        </el-menu-item>
       </el-menu>
     </el-aside>
 
@@ -519,12 +525,14 @@
 
 <script setup>
 import { ref, reactive, onMounted, onUpdated, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElNotification } from 'element-plus'
 import {
   Menu, Picture, Search, Bell, Location, DataAnalysis, User, Upload, Loading
 } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
 
+const router = useRouter()
 // 核心引用
 const chartRef = ref(null)
 const pathFormRef = ref(null)
@@ -567,6 +575,9 @@ const handleMenuSelect = (index) => {
       getHydroData()
       initHydroChart()
     }, 200)
+  }
+  if (index === '7') {
+    router.push('/3d')
   }
 }
 

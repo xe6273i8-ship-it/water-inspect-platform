@@ -528,7 +528,6 @@
             <ThreeDView />
           </el-card>
         </div>
-
       </el-main>
     </el-container>
   </el-container>

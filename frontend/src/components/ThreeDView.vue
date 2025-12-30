@@ -5,6 +5,7 @@
 <script>
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 export default {
   name: "ThreeDView",
@@ -20,54 +21,100 @@ export default {
     init3D() {
       const container = this.$refs.container;
 
-      // scene
+      // === 场景
       this.scene = new THREE.Scene();
-      this.scene.background = new THREE.Color(0xfafafa);
+      this.scene.background = new THREE.Color(0x87ceeb); // 天空蓝
 
-      // camera
+      // === 相机
       const width = container.clientWidth;
       const height = container.clientHeight;
       this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-      this.camera.position.set(0, 10, 20);
+      this.camera.position.set(0, 15, 30);
 
-      // renderer
+      // === 渲染器
       this.renderer = new THREE.WebGLRenderer({ antialias: true });
       this.renderer.setSize(width, height);
       container.appendChild(this.renderer.domElement);
 
-      // controls
+      // === 控制器
       this.controls = new OrbitControls(this.camera, this.renderer.domElement);
       this.controls.enableDamping = true;
 
-      // lights
-      const light1 = new THREE.DirectionalLight(0xffffff, 0.8);
-      light1.position.set(5, 10, 7);
-      this.scene.add(light1);
+      // === 光照
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+      dirLight.position.set(10, 20, 10);
+      this.scene.add(dirLight);
 
       const ambient = new THREE.AmbientLight(0xffffff, 0.4);
       this.scene.add(ambient);
 
-      this.drawSample();
+      // === 添加地面 + 水面
+      this.addGroundAndRiver();
 
+      // === 加载模型
+      this.loadModels();
+
+      // === 开始渲染
       this.animate();
     },
 
-    drawSample() {
-      // ground
-      const plane = new THREE.Mesh(
-        new THREE.PlaneGeometry(200, 200),
-        new THREE.MeshStandardMaterial({ color: "#e0e0e0" })
-      );
-      plane.rotation.x = -Math.PI / 2;
-      this.scene.add(plane);
+    addGroundAndRiver() {
+      // 草地
+      const groundGeo = new THREE.PlaneGeometry(200, 200);
+      const groundMat = new THREE.MeshStandardMaterial({ color: 0x6bbf59 });
+      const ground = new THREE.Mesh(groundGeo, groundMat);
+      ground.rotation.x = -Math.PI / 2;
+      this.scene.add(ground);
 
-      // sample box
-      const box = new THREE.Mesh(
-        new THREE.BoxGeometry(4, 4, 4),
-        new THREE.MeshStandardMaterial({ color: "#3994ff" })
+      // 河流水面
+      const waterGeo = new THREE.PlaneGeometry(80, 15);
+      const waterMat = new THREE.MeshStandardMaterial({
+        color: 0x3ca0d3,
+        transparent: true,
+        opacity: 0.6,
+      });
+      const water = new THREE.Mesh(waterGeo, waterMat);
+      water.rotation.x = -Math.PI / 2;
+      water.position.set(0, 0.1, -20);
+      this.scene.add(water);
+    },
+
+    loadModels() {
+      const loader = new GLTFLoader();
+
+      // ✔ 加载无人机模型
+      loader.load(
+        "/models/drone.glb",
+        (gltf) => {
+          const drone = gltf.scene;
+          drone.scale.set(1.5, 1.5, 1.5);
+          drone.position.set(0, 5, 0);
+          this.scene.add(drone);
+        },
+        undefined,
+        (error) => {
+          console.error("加载无人机模型失败:", error);
+        }
       );
-      box.position.y = 2;
-      this.scene.add(box);
+
+      // ✔ 树木模型（如果有 tree.glb）
+      loader.load(
+        "/models/tree.glb",
+        (gltf) => {
+          const tree = gltf.scene;
+          tree.scale.set(3, 3, 3);
+          tree.position.set(-30, 0, -10);
+          this.scene.add(tree);
+
+          const tree2 = tree.clone();
+          tree2.position.set(25, 0, -15);
+          this.scene.add(tree2);
+        },
+        undefined,
+        (err) => {
+          // 如果没有 tree.glb 不报错
+        }
+      );
     },
 
     animate() {
@@ -81,8 +128,8 @@ export default {
       this.camera.aspect = container.clientWidth / container.clientHeight;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(container.clientWidth, container.clientHeight);
-    }
-  }
+    },
+  },
 };
 </script>
 

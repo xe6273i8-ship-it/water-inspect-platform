@@ -518,6 +518,17 @@
             </div>
           </el-card>
         </div>
+        <!-- 7. 3D可视化 -->
+        <div v-if="activeMenu === '7'" class="content-card" style="width: 100%; margin-bottom: 20px;">
+          <div style="font-size: 20px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; color: #38bdf8;">
+            <el-icon style="color: #38bdf8; margin-right: 10px;"><Grid /></el-icon>
+            3D可视化
+          </div>
+          <el-card style="width: 100%; background: #1e293b; border: 1px solid #38bdf8; box-shadow: 0 2px 12px rgba(56, 189, 248, 0.1);">
+            <ThreeDView />
+          </el-card>
+        </div>
+
       </el-main>
     </el-container>
   </el-container>
@@ -530,6 +541,7 @@ import { ElMessage, ElNotification } from 'element-plus'
 import {
   Menu, Picture, Search, Bell, Location, DataAnalysis, User, Upload, Loading
 } from '@element-plus/icons-vue'
+import ThreeDView from "@/components/ThreeDView.vue"
 import * as echarts from 'echarts'
 
 const router = useRouter()
@@ -576,9 +588,9 @@ const handleMenuSelect = (index) => {
       initHydroChart()
     }, 200)
   }
-  if (index === '7') {
-    router.push('/3d')
-  }
+  //if (index === '7') {
+    //router.push('/3d')
+  //}
 }
 
 // 巡检任务管理

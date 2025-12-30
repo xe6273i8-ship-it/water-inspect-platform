@@ -1,0 +1,7 @@
+flask
+flask-sqlalchemy
+flask-cors
+pillow  # 仅保留基础依赖，注释/删除ultralytics、opencv-python
+# ultralytics
+# opencv-python
+# pymysql （已改用SQLite，也注释）
